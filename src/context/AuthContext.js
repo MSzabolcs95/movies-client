@@ -27,7 +27,7 @@ const AuthProvider = ({ children }) => {
     try {
       const data = await refreshToken(storedRefreshToken);
       setAccessToken(data.accessToken);
-      setUser({ email: data.email });
+      setUser({ email: data.email, id: data.userId });
       localStorage.setItem('accessToken', data.accessToken);
       localStorage.setItem('refreshToken', data.refreshToken); 
     } catch (error) {

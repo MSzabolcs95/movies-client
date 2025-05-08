@@ -26,9 +26,13 @@ export const getCommentById = async (commentId) => {
   return response.data;
 };
 
-export const addComment = async (comment) => {
-  const response = await axios.post(API_BASE_URL, comment, {
-    headers: getAuthHeaders(),
-  });
+export const addComment = async (comment, userId) => {
+  const response = await axios.post(
+    API_BASE_URL,
+    { ...comment, userId }, // Include userId in the request body
+    {
+      headers: getAuthHeaders(),
+    }
+  );
   return response.data;
 };

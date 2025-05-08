@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { addComment } from '../api/commentApi';
+import { AuthContext } from '../context/AuthContext'; // Import AuthContext to get the user
 
 interface AddCommentProps {
   movieId: string;
@@ -10,11 +11,17 @@ const AddComment: React.FC<AddCommentProps> = ({ movieId, onCommentAdded }) => {
   const [content, setContent] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
+  const { user } = useContext(AuthContext); // Access the user from AuthContext
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setSuccess(false);
+
+    if (!user || !user.id) {
+      setError('User not authenticated.');
+      return;
+    }
 
     const newComment = {
       content,
@@ -22,10 +29,10 @@ const AddComment: React.FC<AddCommentProps> = ({ movieId, onCommentAdded }) => {
     };
 
     try {
-      await addComment(newComment); 
+      await addComment(newComment, user.id);
       setSuccess(true);
       setContent('');
-      onCommentAdded(); 
+      onCommentAdded();
     } catch (err) {
       setError('Failed to add comment. Please try again.');
     }
